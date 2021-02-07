@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block css %}
+    <style>
+
+        #card-link {
+            text-decoration: none !important;
+            color: black !important;
+
+        }
+
+        .card {
+            transition: all 0.2s ease-in-out;
+        }
+
+        .card:hover {
+            transform: scale(1.05, 1.05)
+        }
+
+
+    </style>
+
+
+{% endblock %}
+
+{% block body %}
+    {% if messages %}
+        <div>
+            {% for message in messages %}
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                    <div class="alert alert-success" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">×</span></button>
+                        <span><strong>Message: {{ message }}</strong><br></span></div>
+                {% endif %}
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                    <div class="alert alert-danger" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">×</span></button>
+                        <span><strong>Important: {{ message }}</strong><br></span></div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="container-fluid text-center my-5 py-2">
+        <h2 class="text-info mx-5">Our Range of Products</h2>
+        <div class="row px-5 justify-content-md-center my-5">
+            {% for product in page_obj %}
+                <a href="/product/id/{{ product.id }}" id="card-link">
+                    <div class="card col-sm-3 mx-sm-2 my-3 text-center p-1 shadow-lg ">
+                        <img src='{% static 'placeholder.jpg' %}' class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            {% if product.desc|length > 200 %}
+                                <p class="card-text">{{ product.desc|slice:200 }}...</p>
+                            {% else %}
+                                <p class="card-text">{{ product.desc }}</p>
+                            {% endif %}
+
+                            <h3>Price:&#x20B9;{{ product.price }}</h3>
+                            <div class="container-fluid text-center my-3">
+                                <a href="/product/id/{{ product.pid }}" class="btn btn-outline-primary">Details</a>
+                                <a href="/buy/{{ product.id }}" class="btn btn-outline-success mx-3 my-3"><i
+                                        class="icon-basket"></i>Buy Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+
+    </div>
+
+
+                                <div class="row">
+                                <div class="col-12 col-md-12 d-lg-flex justify-content-lg-center align-items-lg-center">
+                                    <nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
+                                        <ul class="pagination">
+                                            {% if page_obj.number != 1 %}
+                                            <li class="page-item "><a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+                                            <li class="page-item "><a class="page-link" href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a></li>
+                                            {% endif %}
+                                            <li class="page-item active"><a class="page-link" href="?page={{ page_obj.number }}">{{ page_obj.number }}</a></li>
+                                            {% if page_obj.has_next %}
+                                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a></li>
+                                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+                                            {% endif %}
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+{% endblock %}
+

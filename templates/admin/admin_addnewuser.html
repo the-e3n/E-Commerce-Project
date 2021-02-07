@@ -1,0 +1,102 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block title %}
+    Admin Edit Account
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block body %}
+
+<div class="container-fluid flex-wrap">
+{% if messages %}
+    <div>
+        {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+        <div class="alert alert-success" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                    aria-hidden="true">×</span></button>
+            <span><strong>Message: {{ message }}</strong><br></span></div>
+        {% endif %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+            <div class="alert alert-danger" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <span><strong>Important: {{ message }}</strong><br></span></div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+<div class="container-fluid text-center">
+    <h3 class="text-dark mb-2">Profile</h3>
+    <div class="row justify-content-center mb-2">
+        <div class="col-lg-8">
+            <div class="row">
+                <div class="col text-left text-dark">
+                    <div class="card shadow mb-3">
+                        <div class="card-header py-3">
+                            <p class="text-primary m-0 font-weight-bold">User Settings</p>
+                        </div>
+                        <div class="card-body">
+                            <form class="text-left text-dark" method="post" action="#">
+                                {% csrf_token %}
+                                <div class="form-row">
+                                    <div class="col">
+                                        <div class="form-group"><label for="first_name"><strong>First
+                                            Name</strong></label>{{ form.first_name }}</div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group"><label for="last_name"><strong>Last
+                                            Name</strong></label>{{ form.last_name }}</div>
+                                    </div>
+                                </div>
+                                <div class="form-row" style="margin-top: 10px;">
+                                    <div class="col">
+                                        <div class="form-group"><label
+                                                for="username"><strong>Username</strong></label>{{ form.username }}</div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group"><label for="email"><strong>Email
+                                            Address</strong></label>{{ form.email }}</div>
+                                    </div>
+                                </div>
+                                <div class="form-row" style="margin-top: 10px;">
+                                    <div class="col">
+                                        <div class="form-group"><label
+                                                for="is_admin"><strong>Admin</strong></label>{{ form.is_admin }}</div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group"><label for="is_staff"><strong>Staff Status</strong></label>{{ form.is_staff }}</div>
+                                    </div>
+                                </div>
+                                <div class="form-row" style="margin-top: 10px;">
+                                    <div class="col">
+                                        <div class="form-group">
+                                    <div class="form-group"><label
+                                                for="password"><strong>Password</strong></label>{{ form.password }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="col text-right">
+                                        <div class="form-group">
+                                    <button class="btn btn-primary my2" type="submit">Add User
+                                    </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+    {% endblock %}
+

@@ -1,0 +1,154 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block title %}
+    Admin Edit Account
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block body %}
+
+<div class="container-fluid flex-wrap">
+{% if messages %}
+    <div>
+        {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+        <div class="alert alert-success" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                    aria-hidden="true">×</span></button>
+            <span><strong>Message: {{ message }}</strong><br></span></div>
+        {% endif %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+            <div class="alert alert-danger" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <span><strong>Important: {{ message }}</strong><br></span></div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+<div class="container-fluid text-center">
+    <h3 class="text-dark mb-2">Profile</h3>
+    <div class="row justify-content-center mb-2">
+        <div class="col-lg-8">
+            <div class="row">
+                <div class="col text-left text-dark">
+                    <div class="card shadow mb-3">
+                        <div class="card-header py-3">
+                            <p class="text-primary m-0 font-weight-bold">User Settings</p>
+                        </div>
+                        <div class="card-body">
+                            <form class="text-left text-dark" method="post" action="#">
+                                {% csrf_token %}
+                                <div class="form-row">
+                                    <div class="col">
+                                        <div class="form-group"><label for="first_name"><strong>First
+                                            Name</strong></label>{{ form.first_name }}</div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group"><label for="last_name"><strong>Last
+                                            Name</strong></label>{{ form.last_name }}</div>
+                                    </div>
+                                </div>
+                                <div class="form-row" style="margin-top: 10px;">
+                                    <div class="col">
+                                        <div class="form-group"><label
+                                                for="username"><strong>Username</strong></label>{{ form.username }}</div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group"><label for="email"><strong>Email
+                                            Address</strong></label>{{ form.email }}</div>
+                                    </div>
+                                </div>
+                                <div class="form-row" style="margin-top: 10px;">
+                                    <div class="col">
+                                        <div class="form-group"><label
+                                                for="is_admin"><strong>Admin</strong></label>{{ form.is_admin }}</div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group"><label for="is_staff"><strong>Staff Status</strong></label>{{ form.is_staff }}</div>
+                                    </div>
+                                </div>
+                                <div class="form-row" style="margin-top: 10px;">
+                                    <div class="col">
+                                        <div class="form-group">
+                                    <button class="btn btn-primary" type="submit" style="margin-top: 20px;">Edit
+                                        Details
+                                    </button>
+                                </div>
+                                    </div>
+                                    {% if not self_profile %}
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <a class="btn btn-danger" href="{% url 'admin_deleteuser' form.username.value %}" style="margin-top: 20px;">Delete User</a>
+
+                                </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                            </form>
+                        </div>
+
+                        {% if not self_profile %}
+                        <div class="card shadow">
+                        <div class="card-header text-center py-3">
+                            <p class="text-primary m-0 font-weight-bold">Orders</p>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive text-center table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info" style="font-family: Nunito, sans-serif;">
+                                <table class="table table-hover my-0" id="dataTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Ordered By</th>
+                                            <th>Product</th>
+                                            <th>Ordered On</th>
+                                            <th>Edit</th>
+                                            <th>Mark Complete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                {% for order in orders %}
+                                        <tr>
+                                            <td><a href="#">{{ order.customer.username.capitalize }}</a></td>
+                                            <td>{{ order.product.name }}</td>
+                                            <td>{{ order.date }}</td>
+                                            <td><a class="btn btn-outline-dark" href="{% url 'admin_order_details' order.id %}">Edit</a></td>
+                                            <td>
+                                                <form action="{% url 'admin_order_details' order.id %}" method="post"><input
+                                                        type="submit" class="btn btn-outline-primary" value="Mark Complete"></form></td>
+                                        </tr>
+                                {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 col-md-12 d-lg-flex justify-content-lg-center align-items-lg-center">
+                                    <nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
+                                        <ul class="pagination">
+                                            <li class="page-item disabled"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+                                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                            <li class="page-item"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+    </div>
+    </div>
+    {% endblock %}
+

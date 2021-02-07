@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block body %}
+<div class="container flex-wrap">
+    {% if messages %}
+    <div>
+        {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+        <div class="alert alert-success" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                    aria-hidden="true">×</span></button>
+            <span><strong>Message: {{ message }}</strong><br></span></div>
+        {% endif %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+            <div class="alert alert-danger" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <span><strong>Important: {{ message }}</strong><br></span></div>
+        {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+                    <div class="d-sm-flex justify-content-between align-items-center mb-4">
+                        <h5 class="text-dark mb-0" style="height: 10px;">Welcome, {{ user.first_name }}</h5>
+                    </div>
+                    <div class="d-sm-flex justify-content-between align-items-center mb-4">
+                        <h2 class="text-dark mb-0">Orders&nbsp;</h2>
+                    </div>
+                    <div class="container-fluid">
+                    <h3 class="text-center text-primary mb-4" style="color: var(--blue);">List of all of your orders&nbsp;</h3>
+                    <div class="card shadow">
+                        <div class="card-header text-center py-3">
+                            <p class="text-primary m-0 font-weight-bold">Orders</p>
+                        </div>
+                        <div class="card-body">
+                        {% if orders %}
+{#                            <div class="row">#}
+{#                                <div class="col-12 col-md-12 text-nowrap text-center">#}
+{#                                    <div id="dataTable_length" class="dataTables_length" aria-controls="dataTable">#}
+{#                                        <form method="get" action="{% url 'admin_dashboard' %}"><label>Show&nbsp;<select class="form-control form-control form-control-sm custom-select custom-select-sm">#}
+{#                                                    <option value="10" selected="">10</option>#}
+{#                                                    <option value="25">25</option>#}
+{#                                                    <option value="50">50</option>#}
+{#                                                    <option value="100">100</option>#}
+{#                                                </select>#}
+{#                                            <button class="btn btn-primary btn-sm" type="submit" style="margin-left: 15px;">Filter</button>&nbsp;</label>#}
+{#                                        </form>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            </div>#}
+                            <div class="table-responsive text-center table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info" style="font-family: Nunito, sans-serif;">
+                                <table class="table table-hover my-0" id="dataTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Serial no.</th>
+                                            <th>Product</th>
+                                            <th>Ordered On</th>
+                                            <th>Price</th>
+                                            <th>View Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                {% for order in orders %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ order.product.name }}</td>
+                                            <td>{{ order.date }}</td>
+                                            <td>Rs. {{ order.product.price }}</td>
+                                            <td><a class="btn btn-primary" href="{% url 'order_details' order.id %}">View Order Status</a></td>
+                                        </tr>
+                                {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 col-md-12 d-lg-flex justify-content-lg-center align-items-lg-center">
+                                    <nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
+                                        <ul class="pagination">
+                                            <li class="page-item disabled"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+                                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                            <li class="page-item"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        {% else %}
+                                     <div class="text-center">
+
+                            <h4>Order Something First!!</h4>
+                                     </div>
+                        {% endif %}
+                        </div>
+                    </div>
+                </div>
+                </div>
+
+{% endblock %}

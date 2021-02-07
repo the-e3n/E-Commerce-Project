@@ -1,0 +1,86 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block title %}
+Admin Dashboard
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block body %}
+<div class="container flex-wrap">
+    {% if messages %}
+    <div>
+        {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+        <div class="alert alert-success" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                    aria-hidden="true">×</span></button>
+            <span><strong>Message: {{ message }}</strong><br></span></div>
+        {% endif %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+            <div class="alert alert-danger" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <span><strong>Important: {{ message }}</strong><br></span></div>
+        {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+                    <div class="container-fluid">
+                    <h3 class="text-center text-primary mb-4" style="color: var(--blue);">Registered Users&nbsp;</h3>
+                    <div class="card shadow">
+                        <div class="card-header text-center py-3 row">
+                            <div class="col-6">
+                                <p class="text-primary m-0 font-weight-bold">Users</p>
+                            </div>
+                            <div class="col-6">
+                                <a href="{% url 'admin_createuser' %}" class="btn btn-primary">Create a new user</a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+{#                            <div class="row">#}
+{#                                <div class="col-12 col-md-12 text-nowrap text-center">#}
+{#                                    <div id="dataTable_length" class="dataTables_length" aria-controls="dataTable">#}
+{#                                        <form method="get" action="{% url 'admin_dashboard' %}"><label>Show&nbsp;<select class="form-control form-control form-control-sm custom-select custom-select-sm">#}
+{#                                                    <option value="10" selected="">10</option>#}
+{#                                                    <option value="25">25</option>#}
+{#                                                    <option value="50">50</option>#}
+{#                                                    <option value="100">100</option>#}
+{#                                                </select>#}
+{#                                            <button class="btn btn-primary btn-sm" type="submit" style="margin-left: 15px;">Filter</button>&nbsp;</label>#}
+{#                                        </form>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            </div>#}
+                            <div class="table-responsive text-center table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info" style="font-family: Nunito, sans-serif;">
+                                <table class="table table-hover my-0" id="dataTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Username</th>
+                                            <th>First Name</th>
+                                            <th>Email</th>
+                                            <th>Edit</th>
+
+                                        </tr>
+                                    </thead>
+                                {% for user in users.reverse %}
+                                    <tbody>
+                                        <tr>
+                                            <td><a href="{% url 'admin_edit_account' user.id %}">{{ user.username.capitalize }}</a></td>
+                                            <td>{{ user.first_name }}</td>
+                                            <td>{{ user.email}}</td>
+                                            <td><a class="btn btn-primary" href="{% url 'admin_edit_account' user.username %}">Edit</a></td>
+{#                                            <td><a class="btn btn-danger" href="#">Delete</a></td>#}
+                                        </tr>
+                                    </tbody>
+                                {% endfor %}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+
+{% endblock %}
