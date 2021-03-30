@@ -1,7 +1,7 @@
 {% extends 'admin/admin_base.html' %}
 
 {% block title %}
-Dashboard
+    Orders
 {% endblock %}
 
 {% block css %}
@@ -37,8 +37,8 @@ Dashboard
                     <div class="container-fluid">
                     <h3 class="text-center text-primary mb-4" style="color: var(--blue);">List Of All Orders&nbsp;</h3>
                     <div class="card shadow">
-                        <div class="card-header text-center py-3">
-                            <p class="text-primary m-0 font-weight-bold">Orders</p>
+                        <div class="card-header py-3"><button class="btn btn-primary my2" onclick="window.history.back()">Back</button>
+                            <p class="text-primary text-center m-0 font-weight-bold">Orders</p>
                         </div>
                         <div class="card-body">
 {#                            <div class="row">#}

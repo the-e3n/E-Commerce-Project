@@ -1,5 +1,5 @@
 from django.db import models
-from cms_app.models import User
+from cms_admin.models import User
 
 # Create your models here.
 

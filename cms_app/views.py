@@ -1,25 +1,22 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib import auth
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required, user_passes_test
-from .models import User
-from shop.models import Product, Order
-from .helpers import validate_data, validate_pass_uname, is_valid_oldpass, confirm_pass, validate_pass_only, user_total_spend, admin_total_orders
+from django.contrib.auth.decorators import login_required
+from cms_admin.models import User
+from shop.models import Order
+from .helpers import validate_data, validate_pass_uname, is_valid_oldpass, confirm_pass, validate_pass_only,\
+    user_total_spend
 
-from .forms import UserForm, AdminUserChangeForm, AdminOrderDetailsForm, AdminAddUserForm
-# Create your views here.
-
-
-# Index View
-
+from .models import Address
+from .forms import UserForm, UserAddressForm
 
 
 # Login Page
 class Login(View):
 
-
-    def get(self, request):
+    @staticmethod
+    def get(request):
         if request.user.is_authenticated:
             if request.user.is_admin:
                 return redirect('admin_home')
@@ -27,7 +24,8 @@ class Login(View):
             return redirect('home')
         return render(request, 'users/account_form.html', )
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         if request.user.is_authenticated:
             return redirect('home')
         context = {}
@@ -43,14 +41,16 @@ class Login(View):
 # View to render Account sign in/signup Page
 class Register(View):
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
         if request.user.is_authenticated:
             return redirect('home')
         context = {}
         context['register'] = True
         return render(request, 'users/account_form.html', context=context)
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         if request.user.is_authenticated:
             return redirect('home')
         context = {}
@@ -86,7 +86,8 @@ class Register(View):
 # List all orders of a user. If user is admin redirect to admin dashboard
 class UserDashboard(View):
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
         if not request.user.is_authenticated:
             messages.error(request, 'Login Required !')
             return redirect('home')
@@ -100,18 +101,22 @@ class UserDashboard(View):
 
 
 # Allow the user to edit ones profile
-class EditAccount(View):
+class UserEditAccount(View):
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
         if not request.user.is_authenticated:
             messages.error(request, 'Login Required !')
             return redirect('home')
         context = {}
+        context['addrs'] = Address.objects.filter(user=request.user)
+        print(context['addrs'])
         form = UserForm(instance=request.user)
         context['form'] = form
         return render(request, 'users/user_profile.html', context)
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         if not request.user.is_authenticated:
             messages.error(request, 'Login Required !')
             return redirect('home')
@@ -126,9 +131,115 @@ class EditAccount(View):
         return render(request, 'users/user_profile.html', context)
 
 
+class UserEditAddress(View):
+    @staticmethod
+    def get(request, addrid=None):
+        if not request.user.is_authenticated:
+            messages.error(request, 'Login Required !')
+            return redirect('home')
+        context = {}
+        context['addrid'] = addrid
+        if addrid is not None:
+            try:
+                address = Address.objects.get(id=addrid)
+                if address.user == request.user:
+                    context['form'] = UserAddressForm(instance=address)
+                    return render(request, 'users/user_edit_address.html', context)
+                else:
+                    messages.error(request, 'You are not at this address')
+                    return redirect('user_profile')
+            except Address.DoesNotExist:
+                messages.error(request, 'Address Not Found with this id')
+                return redirect('user_profile')
+        else:
+            messages.error(request, 'Not a valid address id')
+            return redirect('user_profile')
+
+    @staticmethod
+    def post(request, addrid=None):
+        if not request.user.is_authenticated:
+            messages.error(request, 'Login Required !')
+            return redirect('home')
+        context = {}
+        if addrid is not None:
+            try:
+                address = Address.objects.get(id=addrid)
+                if address.user == request.user:
+                    form = UserAddressForm(instance=address, data=request.POST)
+                    if form.is_valid():
+                        form.save()
+                        messages.success(request, 'Address Updated Successfully')
+                        return redirect('user_profile')
+                    else:
+                        messages.error(request, 'Not valid form data')
+                    return render(request, 'users/user_edit_address.html', context)
+                else:
+                    messages.error(request, 'You are not at this address')
+                    return redirect('user_profile')
+            except Address.DoesNotExist:
+                messages.error(request, 'Address Not Found with this id')
+                return redirect('user_profile')
+        else:
+            messages.error(request, 'Not a valid address id')
+            return redirect('user_profile')
+
+
+class UserCreateAddress(View):
+    @staticmethod
+    def get(request):
+        if not request.user.is_authenticated:
+            messages.error(request, 'Login Required !')
+            return redirect('home')
+        context = {}
+        form = UserAddressForm()
+        context['form'] = form
+        return render(request, 'users/user_create_address.html', context)
+
+
+    @staticmethod
+    def post(request):
+        if not request.user.is_authenticated:
+            messages.error(request, 'Login Required !')
+            return redirect('home')
+        context = {}
+        form = UserAddressForm(request.POST)
+        if form.is_valid():
+            address = form.save(commit=False)
+            address.user = request.user
+            address.save()
+            messages.success(request, 'Address saved Successfully')
+        else:
+            messages.error(request, 'Invalid Form')
+        return redirect('user_profile')
+
+
+def user_delete_addr(request, addrid=None):
+    if not request.user.is_authenticated:
+        messages.error(request, 'Login Required !')
+        return redirect('home')
+    context = {}
+    if addrid is not None:
+        try:
+            address = Address.objects.get(id=addrid)
+            if address.user == request.user:
+                address.delete()
+                messages.success(request, 'Address Deleted Succesfully')
+                return redirect('user_profile')
+            else:
+                messages.error(request, 'You are not at this address')
+                return redirect('user_profile')
+        except Address.DoesNotExist:
+            messages.error(request, 'Address Not Found with this id')
+            return redirect('user_profile')
+    else:
+        messages.error(request, 'Not a valid address id')
+        return redirect('user_profile')
+
+
 class UserOrders(View):
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
         if not request.user.is_authenticated:
             messages.error(request, 'Login Required !')
             return redirect('home')
@@ -137,9 +248,10 @@ class UserOrders(View):
         return render(request, 'users/user_orders.html', context=context)
 
 
-class OrderDetails(View):
+class UserOrderDetails(View):
 
-    def get(self, request, orderid=None):
+    @staticmethod
+    def get(request, orderid=None):
         if not request.user.is_authenticated:
             messages.error(request, 'Login Required !')
             return redirect('home')
@@ -154,224 +266,21 @@ class OrderDetails(View):
         return render(request, 'users/user_order_details.html', context=context)
 
 
-# Admin Dashboard For Listing All User On front Page.
-# Only Allow Admin Users To View This Page
-class AdminDashboard(View):
-
-    def get(self, request):
-        if not request.user.is_authenticated and request.user.is_admin:
-            messages.error(request, 'You Seems To Enter The Wrong Place')
-            return redirect('home')
-        context = {}
-        users = User.objects.filter(is_admin=False)
-        context['users'] = users
-        context['total_orders'] = admin_total_orders(users)
-        return render(request, 'admin/admin_dashboard.html', context=context)
-
-
-class AdminAddNewUser(View):
-
-    def get(self, request):
-        if not request.user.is_authenticated and request.user.is_admin:
-            messages.error(request, 'Login Required !')
-            return redirect('login')
-        context = {}
-        form = AdminAddUserForm()
-        context['form'] = form
-        return render(request, 'admin/admin_addnewuser.html', context)
-
-    def post(self, request):
-        if not request.user.is_authenticated and request.user.is_admin:
-            messages.error(request, 'Login Required !')
-            return redirect('login')
-        try:
-            user = User.objects.get(username=request.POST['username'])
-        except User.DoesNotExist:
-            context = {}
-            form = AdminAddUserForm(data=request.POST)
-            if form.is_valid():
-                form.save()
-                messages.success(request, 'Added New User')
-            else:
-                messages.error(request, 'Wrong details')
-            return redirect('admin_createuser')
-
-
-
-class AdminHome(View):
-
-    def get(self, request):
-        if not request.user.is_authenticated and request.user.is_admin:
-            messages.error(request, 'You Seems To Enter The Wrong Place')
-            return redirect('home')
-        return redirect('admin_dashboard')
-
-
-class AdminAllUsers(View):
-
-    def get(self, request):
-        if not request.user.is_authenticated and request.user.is_admin:
-            messages.error(request, 'You Seems To Enter The Wrong Place')
-            return redirect('home')
-        context = {}
-        users = User.objects.filter(is_admin=False)
-        context['users'] = users
-        return render(request, 'admin/admin_users.html', context=context)
-
-# Allow The Admin To Edit Only The User account
-class AdminEditAccount(View):
-
-    def get(self, request, user_name=None):
-        if not request.user.is_authenticated and request.user.is_admin:
-            messages.error(request, 'Login Required !')
-            return redirect('login')
-        context = {}
-        try:
-            if user_name is None:
-                user = request.user
-                orders = user.order_set.all()
-                if user.is_admin and user.is_authenticated:
-                    context['self_profile'] = True
-            else:
-                user = User.objects.get(username=user_name)
-                orders = user.order_set.all()
-        except User.DoesNotExist:
-            if user_name is not None:
-                messages.error(request, 'Invalid User Name')
-                return redirect('admin_edit_account')
-        form = AdminUserChangeForm(instance=user)
-        context['form'] = form
-        context['orders'] = orders
-        return render(request, 'admin/admin_userprofile.html', context)
-
-    def post(self, request, user_name):
-        if not request.user.is_authenticated and request.user.is_admin:
-            messages.error(request, 'Login Required !')
-            return redirect('login')
-        try:
-            user = User.objects.get(username=request.POST['username'])
-        except User.DoesNotExist:
-            pass
-        context = {}
-        form = AdminUserChangeForm(instance=user, data=request.POST)
-        print(form.errors)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Updated User Settings')
-        else:
-            messages.error(request, 'Invalid Details')
-        context['form'] = form
-        return render(request, 'admin/admin_userprofile.html', context)
-
-
-def admin_delete_userprofile(request, user_name):
-    if not request.user.is_authenticated and request.user.is_admin:
-        messages.error(request, 'Login Required !')
-        return redirect('login')
-    try:
-        user = User.objects.get(username=user_name)
-    except User.DoesNotExist:
-        messages.error(request, 'Invalid Username')
-        return redirect('admin_users')
-    else:
-        user.delete()
-        messages.success(request, f'{user.username} deleted successfully ')
-        return redirect('admin_users')
-
-
-# List All Orders to admin
-class AdminOrders(View):
-
-    def get(self, request):
-        if not request.user.is_authenticated and request.user.is_admin:
-            messages.error(request, 'Login Required !')
-            return redirect('home')
-        context = {}
-        context['orders'] = Order.objects.all()
-        return render(request, 'admin/admin_orders.html', context=context)
-
-    def post(self, request):
-        if not request.user.is_authenticated and request.user.is_admin:
-            messages.error(request, 'Login Required !')
-            return redirect('home')
-        context = {}
-        try:
-            order = Order.objects.get(id=request.POST['orderid'])
-            if not order.status:
-                order.status = True
-                order.save()
-                messages.success(request, 'Order marked as Completed')
-            else:
-                messages.error(request, 'Already Completed')
-        except Order.DoesNotExist:
-            messages.error(request, 'Specified order Not Found')
-            return redirect('admin_orders')
-        return redirect('admin_orders')
-
-
-class AdminOrderDetails(View):
-
-    def get(self, request, orderid=None):
-        if not request.user.is_authenticated and request.user.is_admin:
-            messages.error(request, 'Login Required !')
-            return redirect('home')
-        context = {}
-        if orderid is not None:
-            try:
-                order = Order.objects.get(id=orderid)
-                context['orderid'] = orderid
-                form = AdminOrderDetailsForm(instance=order)
-            except Order.DoesNotExist:
-                messages.error(request, 'Specified order Not Found')
-                return redirect('admin_orders')
-            context['form'] = form
-        return render(request, 'admin/admin_order_details.html', context=context)
-
-    def post(self, request, orderid):
-        if not request.user.is_authenticated and request.user.is_admin:
-            messages.error(request, 'Login Required !')
-            return redirect('home')
-        context = {}
-        try:
-            order = Order.objects.get(id=orderid)
-            context['orderid'] = orderid
-            form = AdminOrderDetailsForm(instance=order, data=request.POST)
-        except Order.DoesNotExist:
-            messages.error(request, 'Specified order Not Found')
-            return redirect('admin_orders')
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Order Updated Successfully')
-            context['form'] = AdminOrderDetailsForm(instance=order)
-        return render(request, 'admin/admin_order_details.html', context=context)
-
-
-def admin_delete_order(request, orderid):
-    if not request.user.is_authenticated and request.user.is_admin:
-        messages.error(request, 'Login Required !')
-        return redirect('login')
-    context = {}
-    try:
-        order = Order.objects.get(id=orderid)
-        order.delete()
-        messages.success(request, 'Order Deleted Successfully')
-    except Order.DoesNotExist:
-        messages.error(request, 'Specified order Not Found')
-        return redirect('admin_orders')
-    return redirect('admin_orders')
 
 
 # Allow the user to change the user password, After Validating
 class ChangePassword(View):
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
         if not request.user.is_authenticated:
             messages.error(request, 'Login Required !')
             return redirect('home')
         context = {}
         return redirect('profile')
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         if not request.user.is_authenticated:
             messages.error(request, 'Login Required !')
             return redirect('profile')

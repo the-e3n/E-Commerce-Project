@@ -30,12 +30,15 @@
     </div>
 </div>
 {% endif %}
+
 <div class="container-fluid text-center">
+
     <h3 class="text-dark mb-2">Profile</h3>
     <div class="row justify-content-center mb-2">
         <div class="col-lg-8">
             <div class="row">
                 <div class="col text-left text-dark">
+                            <button class="btn btn-primary my-2 mx-2" onclick="window.history.back()">Back</button>
                     <div class="card shadow mb-3">
                         <div class="card-header py-3">
                             <p class="text-primary m-0 font-weight-bold">User Settings</p>
@@ -109,9 +112,63 @@
                             </form>
                         </div>
                     </div>
+
+                    <div class="text-center">
+                        <a href="{% url 'create_user_address' %}" class="btn btn-primary my-3 text-right">Create a new address</a>
+                    </div>
+                {% if addrs %}
+                    <div class="card shadow">
+                        <div class="card-header text-center py-3">
+                            <p class="text-primary m-0 font-weight-bold">Addresses</p>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive text-center table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info" style="font-family: Nunito, sans-serif;">
+                                <table class="table table-hover my-0" id="dataTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Address Type</th>
+                                            <th>Address</th>
+                                            <th>Edit</th>
+                                            <th>Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                {% for address in addrs %}
+                                        <tr>
+                                            <td>{{ address.address_type }}</td>
+                                            <td>{{ address.detail_addr|slice:40 }}</td>
+                                            <td><a class="btn btn-outline-primary" href="{% url 'edit_user_address' address.id %}">Edit</a></td>
+                                            <td>
+                                                <form action="{% url 'delete_user_address' address.id %}" method="post">
+                                                    {% csrf_token %}
+                                                    <input type="submit" class="btn btn-outline-danger" value="Delete"></form></td>
+                                        </tr>
+                                {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                         {% comment %}   <div class="row">
+                                <div class="col-12 col-md-12 d-lg-flex justify-content-lg-center align-items-lg-center">
+                                    <nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
+                                        <ul class="pagination">
+                                            <li class="page-item disabled"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+                                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                            <li class="page-item"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                          {% endcomment %}
+
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    </div>
+                </div>
+
                 </div>
             </div>
-        </div>
-    </div>
     {% endblock %}
 

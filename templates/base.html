@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>{% block title %}{% endblock %} CMS</title>
+    <title>{% block title %}{% endblock %} | CMS</title>
     <link rel="stylesheet" href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
@@ -18,129 +18,14 @@
 </head>
 
 <body id="page-top" style="background: var(--dark);" class="">
-<div id="wrapper">
-    <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0 toggled">
-        <div class="container-fluid d-flex flex-column p-0">
-            <a class="navbar-brand text-secondary d-flex justify-content-center align-items-center sidebar-brand m-0"
-               href="/">
-                <div class="sidebar-brand-icon rotate-n-15" style="font-size: 20px;"><i class="far fa-keyboard"
-                                                                                        style="color: var(--white);"></i>
-                </div>
-            </a>
-            <hr class="sidebar-divider my-0">
-            <ul class="nav navbar-nav" id="accordionSidebar">
-                <li class="nav-item"><a class="nav-link" href="{% url 'home' %}"><i
-                        class="fas fa-home"></i><span>Home</span></a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'user_dashboard' %}"><i
-                        class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'user_profile' %}"><i
-                        class="fas fa-user"></i><span>Your Profile</span></a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'user_orders' %}"><i
-                        class="fas fa-shopping-cart"></i><span>Orders</span></a></li>
-                <li class="nav-item"></li>
-            </ul>
-            <div class="text-center d-none d-md-inline">
-                <button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button>
-            </div>
-        </div>
-    </nav>
-    <div class="d-flex flex-column" id="content-wrapper">
-        <div id="content" style="color: var(--danger);background: #f1f1f1;">
-            <nav class="navbar navbar-light navbar-expand bg-light shadow mb-4 topbar static-top" style="opacity: 1;">
-                <div class="container-fluid">
-                    <button class="btn btn-link d-md-none rounded-circle mr-3" id="sidebarToggleTop" type="button"><i
-                            class="fas fa-bars"></i></button>
-                    <a href="{% url 'home' %}" style="color: red"><i class="material-icons shadow-lg"
-                                                                     style="font-size: 30px;">home</i></a>
-                    <form class="form-inline d-none d-sm-inline-block mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search mx-auto"
-                          action="{% url 'search' %}" method="get" style="margin-right: 30px;">
-                        <div class="input-group"><input class="bg-light form-control border-0 small" type="text"
-                                                        placeholder="Search" name="search">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary py-0" type="submit"><i class="fas fa-search"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                    <ul class="nav navbar-nav flex-nowrap ml-auto">
-                        <li class="nav-item dropdown d-sm-none no-arrow"><a class="dropdown-toggle nav-link"
-                                                                            data-toggle="dropdown" aria-expanded="false"
-                                                                            href="#"><i class="fas fa-search"></i></a>
-                            <div class="dropdown-menu dropdown-menu-right p-3 animated--grow-in"
-                                 aria-labelledby="searchDropdown">
-                                <form class="form-inline mr-auto navbar-search w-100">
-                                    <div class="input-group"><input class="bg-light form-control border-0 small"
-                                                                    type="text" placeholder="Search for ...">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-primary py-0" type="button"><i
-                                                    class="fas fa-search"></i></button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </li>
-                        {% if user.is_authenticated %}
-                            <li class="nav-item dropdown no-arrow">
-                                <div class="nav-item dropdown no-arrow">
-                                    <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false"
-                                       href="#"><span
-                                            class="d-none d-lg-inline mr-2 text-gray-600 small">{{ user.first_name }}</span><i
-                                            class="fas fa-user shadow"
-                                            style="font-size: 31px;font-weight: bold;text-align: center;border-radius: 23px;border-style: none;height: 36px;"></i></a>
-                                    <div class="dropdown-menu shadow dropdown-menu-right animated--grow-in"><a
-                                            class="dropdown-item" href="{% url 'user_profile' %}"><i
-                                            class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>&nbsp;Profile</a>
-                                        {% if request.user.is_admin %}
-                                            <a
-                                            class="dropdown-item" href="{% url 'admin_dashboard' %}"><i
-                                            class="fas fa-tachometer-alt mr-2 text-gray-400"></i>Admin Dashboard</a>
-                                        {% endif %}
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="{% url 'logout' %}"><i
-                                                class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>&nbsp;Logout</a>
-                                        </div>
-                                    </div>
-                            </li>
-                        {% else %}
-                            <div class="nav-item my-3 ">
-                                    <span>
-                                   <a class="btn btn-outline-primary" href="{% url 'login' %}">Login</a>
-                                    </span>
-                            </div>
-                            <li class="nav-item dropdown no-arrow">
-                                <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link"
-                                                                           data-toggle="dropdown" aria-expanded="false"
-                                                                           href="#"><span
-                                        class="d-none d-lg-inline mr-2 text-gray-600 small"></span><i
-                                        class="fas fa-user shadow"
-                                        style="font-size: 31px;font-weight: bold;text-align: center;border-radius: 23px;border-style: none;height: 36px;"></i></a>
-                                    <div class="dropdown-menu shadow dropdown-menu-right animated--grow-in">
-                                        <a class="dropdown-item" href="{% url 'login' %}"><i
-                                                class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>&nbsp;Login</a>
-                                    </div>
-                                </div>
-                            </li>
-                        {% endif %}
-                    </ul>
-                </div>
-            </nav>
-
+{% include 'navbar.html' %}
 
             {% block body %}
 
             {% endblock %}
 
-        </div>
-        <footer class="bg-white sticky-footer">
-            <div class="container my-auto">
-                <div class="text-center my-auto copyright"><span class="text-dark"
-                                                                 style="font-size: 14px;font-style: normal;font-weight: bold;">Copyright © SAGAR 2021</span>
-                </div>
-            </div>
-        </footer>
-    </div>
-    <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
-</div>
+{% include 'footer.html' %}
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/js/bootstrap.bundle.min.js"></script>
 <script src="{% static 'assets/js/bs-init.js' %}"></script>

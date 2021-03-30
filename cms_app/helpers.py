@@ -1,6 +1,6 @@
 # Helpers For Login Systems
 # Import
-from .models import User
+from cms_admin.models import User
 
 # Constants
 VALID_PASSWORD_CHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@%&_'

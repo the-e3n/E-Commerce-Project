@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from .models import Product
 from django.views import View
 from django.core.paginator import Paginator, EmptyPage
-
+from django.contrib import messages
 # Create your views here.
 
 
@@ -25,3 +25,15 @@ class Home(View):
 
     def post(self, request):
         pass
+
+
+class ProductDetails(View):
+    @staticmethod
+    def get(request, product_id):
+        context = {}
+        try:
+            context['product'] = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            messages.error(request, 'Invalid Product ID')
+            return redirect('home')
+        return render(request, 'shop/product-page.html', context)

@@ -1,7 +1,7 @@
 {% extends 'admin/admin_base.html' %}
 
 {% block title %}
-    Admin Edit Account
+Edit Account
 {% endblock %}
 
 {% block css %}
@@ -36,6 +36,7 @@
         <div class="col-lg-8">
             <div class="row">
                 <div class="col text-left text-dark">
+                            <button class="btn btn-primary my-3" onclick="window.history.back()">Back</button>
                     <div class="card shadow mb-3">
                         <div class="card-header py-3">
                             <p class="text-primary m-0 font-weight-bold">User Settings</p>
@@ -93,7 +94,7 @@
                             </form>
                         </div>
 
-                        {% if not self_profile %}
+                        {% if not self_profile and orders %}
                         <div class="card shadow">
                         <div class="card-header text-center py-3">
                             <p class="text-primary m-0 font-weight-bold">Orders</p>
@@ -142,6 +143,8 @@
                     </div>
                     </div>
                 </div>
+
+
                 {% endif %}
             </div>
         </div>

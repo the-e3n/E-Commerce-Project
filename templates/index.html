@@ -52,7 +52,7 @@
         <h2 class="text-info mx-5">Our Range of Products</h2>
         <div class="row px-5 justify-content-md-center my-5">
             {% for product in page_obj %}
-                <a href="/product/id/{{ product.id }}" id="card-link">
+                <a href="{% url 'product_details' product.id %}" id="card-link">
                     <div class="card col-sm-3 mx-sm-2 my-3 text-center p-1 shadow-lg ">
                         <img src='{% static 'placeholder.jpg' %}' class="card-img-top" alt="...">
                         <div class="card-body">
@@ -65,8 +65,8 @@
 
                             <h3>Price:&#x20B9;{{ product.price }}</h3>
                             <div class="container-fluid text-center my-3">
-                                <a href="/product/id/{{ product.pid }}" class="btn btn-outline-primary">Details</a>
-                                <a href="/buy/{{ product.id }}" class="btn btn-outline-success mx-3 my-3"><i
+                                <a href="{% url 'product_details' product.id %}" class="btn btn-outline-primary">Details</a>
+                                <a href="{% url 'product_details' product.id %}" class="btn btn-outline-success mx-3 my-3"><i
                                         class="icon-basket"></i>Buy Now</a>
                             </div>
                         </div>

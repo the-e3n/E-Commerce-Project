@@ -1,179 +1,119 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %} 
-{{product.name}} | Product
+{% block title %}
+    {{ product.name }} | Product
 {% endblock title %}
 
 
-{% block content %}
-<body>
-    <main class="page product-page">
-        <section class="clean-block clean-product dark">
-            <div class="container">
-            <div class="block-heading">
-                 <h2 class="text-info">{{product.name}}</h2>
-            </div>
-                <div class="block-content">
-                    <div class="product-info">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="gallery">
-                                    <div class="sp"><a href={{product.image.url}}><img class="img-fluid d-block mx-auto" src={{product.image.url}}></a>
+{% block body %}
+    <div class="container-fluid text-center p-4">
+        <div class="row justify-content-center mb-2 p-4">
+            <div class="col-lg-8">
+                <div class="row">
+                    <div class="col text-left text-dark p-4">
+                        <div class="card shadow mb-3 p-3">
+                            <div class="card-header py-3 text-center">
+                                <h2 class="text-info">{{ product.name }}</h2>
+                            </div>
+                            <div class="block-content p-4">
+                                <div class="product-info p-4">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="gallery p-2">
+                                                <div class="sp"><a href="{% url 'product_details' product.id %}">
+                                                    <img class="img-fluid d-block mx-auto"
+                                                         src="{% static 'placeholder.jpg' %}"
+                                                         alt="PRODUCT IMAGE"></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="info">
+                                                <h3 class="align-top">{{ product.name }}</h3>
+                                            </div>
+                                            <div class="price">
+                                                <h3>&#x20B9;{{ product.price }}</h3>
+                                            </div>
+                                            <a href="{% url 'product_details' product.id %}" class="btn btn-primary"><i
+                                                    class="icon-basket"></i>Buy</a>
+                                            <div class="summary">
+                                                <p>{% lorem %}</p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="info">
-                                    <h3 class="align-top">{{product.name}} <span class="badge badge-secondary">NEW</span></h3>
-                                <div class="rating">
-
-                                    {% if product.ratings == 0 %}
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    
-                                    {% elif product.ratings == 1 %}
-                                    <img src={% static '/assets/img/star--half-empty.svg' %}>
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    
-                                    {% elif product.ratings == 2 %}
-                                    <img src={% static '/assets/img/star.svg' %}>
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    
-                                    {% elif product.ratings == 3 %}
-                                    <img src={% static '/assets/img/star.svg' %}>
-                                    <img src={% static '/assets/img/star-half-empty.svg' %}>
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    
-                                    {% elif product.ratings == 4%}
-                                    <img src={% static '/assets/img/star.svg' %}>
-                                    <img src={% static '/assets/img/star.svg' %}>
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    
-                                    {% elif product.ratings == 5 %}
-                                    <img src={% static '/assets/img/star.svg' %}>
-                                    <img src={% static '/assets/img/star.svg' %}>
-                                    <img src={% static '/assets/img/star-half-empty.svg' %}>
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    
-                                    {% elif product.ratings == 6 %}
-                                    <img src={% static '/assets/img/star.svg' %}>
-                                    <img src={% static '/assets/img/star.svg' %}>
-                                    <img src={% static '/assets/img/star.svg' %}>
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    
-                                    {% elif product.ratings == 7 %}
-                                    <img src={% static '/assets/img/star.svg' %}>
-                                    <img src={% static '/assets/img/star.svg' %}>
-                                    <img src={% static '/assets/img/star.svg' %}>
-                                    <img src={% static '/assets/img/star-half-empty.svg' %}>
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    
-                                    {% elif product.ratings == 8 %}
-                                    <img src={% static '/assets/img/star.svg' %}>
-                                    <img src={% static '/assets/img/star.svg' %}>
-                                    <img src={% static '/assets/img/star.svg' %}>
-                                    <img src={% static '/assets/img/star.svg' %}>
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    
-                                    {% elif product.ratings == 9 %}
-                                    <img src={% static '/assets/img/star.svg' %}>
-                                    <img src={% static '/assets/img/star.svg' %}>
-                                    <img src={% static '/assets/img/star.svg' %}>
-                                    <img src={% static '/assets/img/star.svg' %}>
-                                    <img src={% static '/assets/img/star-half-empty.svg' %}>
-
-                                    {% elif product.ratings == 10 %}
-                                    <img src={% static '/assets/img/star.svg' %}>
-                                    <img src={% static '/assets/img/star.svg' %}>
-                                    <img src={% static '/assets/img/star.svg' %}>
-                                    <img src={% static '/assets/img/star.svg' %}>
-                                    <img src={% static '/assets/img/star.svg' %}>
-
-                                    {% else %}
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    <img src={% static '/assets/img/star-empty.svg' %}>
-                                    
-                                    {% endif %} 
-
-                                    </div>
-                                <div class="price">
-                                        <h3>&#x20B9;{{product.price}}</h3>
-                                    </div><a href="/buy/{{product.id}}" class="btn btn-primary"><i class="icon-basket"></i>Buy</a>
-                                    <div class="summary">
-                                        <p>{{product.desc}}</p>
-                                </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="product-info">
-                        <div>
-                            <ul class="nav nav-tabs" role="tablist" id="myTab">
-                                <li class="nav-item" role="presentation"><a class="nav-link active" role="tab" data-toggle="tab" id="description-tab" href="#description">Description</a></li>
-                                <li class="nav-item" role="presentation"><a class="nav-link" role="tab" data-toggle="tab" id="specifications-tabs" href="#specifications">Specifications</a></li>
-                            </ul>
-                            <div class="tab-content" id="myTabContent">
-                                <div class="tab-pane active fade show description" role="tabpanel" id="description">
-                                    <p>{{product.desc}}</p>
-                                    <div class="row">
-                                        <div class="col-md-5">
-                                            <figure class="figure"><img class="img-fluid figure-img" src={{product.image.url}}></figure>
+                            <div class="product-info">
+                                <div>
+                                    <ul class="nav nav-tabs" role="tablist" id="myTab">
+                                        <li class="nav-item" role="presentation"><a class="nav-link active" role="tab"
+                                                                                    data-toggle="tab"
+                                                                                    id="description-tab"
+                                                                                    href="#description">Description</a>
+                                        </li>
+                                        <li class="nav-item" role="presentation"><a class="nav-link" role="tab"
+                                                                                    data-toggle="tab"
+                                                                                    id="specifications-tabs"
+                                                                                    href="#specifications">Specifications</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent">
+                                        <div class="tab-pane active fade show description" role="tabpanel"
+                                             id="description">
+                                            <p>{{ product.desc }}</p>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <figure class="figure"><img class="img-fluid figure-img"
+                                                                                src="{% static 'placeholder.jpg' %}">
+                                                    </figure>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-5"></div>
+                                                <div class="col-md-7">
+                                                    <h4>Features:</h4>
+                                                    <p>{% lorem %}</p>
+                                                </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-7 right">
+                                                    <h4>More Features:</h4>
+                                                    <p>{% lorem %}</p>
+                                                </div>
+                                            </div>
+                                                <div class="row">
+                                                <div class="col-md-7"></div>
+                                                <div class="col-md-5">
+                                                        <img class="img-fluid figure-img"
+                                                                                src="{% static 'placeholder.jpg' %}">
+                                                </div>
+                                                </div>
                                         </div>
-                                        <div class="col-md-7">
-                                            <h4>Features:</h4>
-                                            <p>{{product.desc}}</p>
+                                        <div class="tab-pane fade show specifications" role="tabpanel"
+                                             id="specifications">
+                                            <div class="table-responsive table-bordered">
+                                                <table class="table table-bordered">
+                                                    <tbody>
+                                                    <tr>
+                                                        <td class="stat">Display</td>
+                                                        <td>5.2"</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="stat">Camera</td>
+                                                        <td>12MP</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="stat">RAM</td>
+                                                        <td>4GB</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="stat">OS</td>
+                                                        <td>iOS</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-7 right">
-                                            <h4>More Features:</h4>
-                                            <p>{{product.desc}}</p>
-                                        </div>
-                                        <div class="col-md-5">
-                                            <figure class="figure"><img class="img-fluid figure-img" src={{product.image.url}}></figure>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade show specifications" role="tabpanel" id="specifications">
-                                    <div class="table-responsive table-bordered">
-                                        <table class="table table-bordered">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="stat">Display</td>
-                                                    <td>5.2"</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="stat">Camera</td>
-                                                    <td>12MP</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="stat">RAM</td>
-                                                    <td>4GB</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="stat">OS</td>
-                                                    <td>iOS</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -181,6 +121,6 @@
                     </div>
                 </div>
             </div>
-        </section>
-    </main>
-{% endblock content %}
+        </div>
+    </div>
+{% endblock body %}
