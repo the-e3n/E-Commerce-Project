@@ -5,6 +5,7 @@ from django.views import View
 from django.core.paginator import Paginator, EmptyPage
 from django.contrib import messages
 from .paytm import checksum
+import os
 
 from django.contrib import sessions
 # Create your views here.
@@ -14,6 +15,10 @@ mid = "dTsKxA83677813579578"
 key = "qpzGkE8gjzSyRT1v"
 website = "WEBSTAGING"
 client_id = "ONLINE_BIT"
+try:
+    callback_url = os.environ['CALLBACK_URL']
+except KeyError:
+    callback_url = 'http://localhost:8000/shop/checkout/payment-status/'
 
 class Home(View):
 
@@ -99,7 +104,7 @@ class Checkout(View):
             "TXN_AMOUNT": str(payment.amount),
             "CHANNEL_ID": "WEB",
             "WEBSITE": "WEBSTAGING",
-            'CALLBACK_URL': 'http://localhost:8000/shop/checkout/payment-status/',
+            'CALLBACK_URL': callback_url,
         }
         params['CHECKSUMHASH'] = (checksum.generate_checksum(param_dict=params, merchant_key=key))
         context['params'] = params

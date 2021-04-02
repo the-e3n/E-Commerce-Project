@@ -28,4 +28,5 @@ urlpatterns = [
     path('user/', include('cms_app.urls')),
 
 ]
+handler404 = 'cms_app.views.error404'
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

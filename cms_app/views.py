@@ -306,6 +306,9 @@ class ChangePassword(View):
             return redirect('profile')
 
 
+def error404(request, exception):
+    return render(request, 'error404.html')
+
 # Logout Function
 @login_required(login_url='login')
 def logout(request):
