@@ -1,10 +1,19 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from .models import Product
+from .models import Product, PaymentDetails, Order
 from django.views import View
 from django.core.paginator import Paginator, EmptyPage
 from django.contrib import messages
+from .paytm import checksum
+
+from django.contrib import sessions
 # Create your views here.
 
+
+mid = "dTsKxA83677813579578"
+key = "qpzGkE8gjzSyRT1v"
+website = "WEBSTAGING"
+client_id = "ONLINE_BIT"
 
 class Home(View):
 
@@ -33,7 +42,100 @@ class ProductDetails(View):
         context = {}
         try:
             context['product'] = Product.objects.get(id=product_id)
+            request.session['product_id'] = product_id
         except Product.DoesNotExist:
             messages.error(request, 'Invalid Product ID')
             return redirect('home')
         return render(request, 'shop/product-page.html', context)
+
+
+class OrderDetail(View):
+    @staticmethod
+    def get(request):
+        if not request.user.is_authenticated:
+            messages.error(request, 'Login Required !')
+            return redirect('home')
+        context ={}
+        return render(request, 'shop/payment_details.html', context)
+
+    @staticmethod
+    def post(request):
+        if not request.user.is_authenticated:
+            messages.error(request, 'Login Required !')
+            return redirect('home')
+        context = {}
+        try:
+            product = Product.objects.get(id=request.session['product_id'])
+            order = Order.objects.create(customer=request.user, product=product)
+            order.save()
+            payment = PaymentDetails(
+                customer=request.user,
+                amount=product.price,
+                product=product,
+                address=request.POST['address'],
+                order=order
+            )
+            payment.save()
+            request.session['payment_id'] = payment.id
+        except Product.DoesNotExist:
+            messages.error(request, 'Invalid Product ID')
+            return redirect('home')
+        return redirect('checkout')
+
+
+class Checkout(View):
+
+    @staticmethod
+    def get(request):
+        context={}
+        payment = PaymentDetails.objects.get(id=request.session['payment_id'])
+        context['payment'] = payment
+
+        # Sending Params for Payment Processing
+        params = {
+            "MID": mid,
+            "ORDER_ID": str(request.session['payment_id']),
+            "CUST_ID": str(payment.customer.id),
+            "TXN_AMOUNT": str(payment.amount),
+            "CHANNEL_ID": "WEB",
+            "WEBSITE": "WEBSTAGING",
+            'CALLBACK_URL': 'http://localhost:8000/shop/checkout/payment-status/',
+        }
+        params['CHECKSUMHASH'] = (checksum.generate_checksum(param_dict=params, merchant_key=key))
+        context['params'] = params
+        return render(request, 'shop/checkout.html', context)
+
+
+class HandlePayment(View):
+
+    @staticmethod
+    def post(request):
+        context = {}
+        response = request.POST
+        if response['STATUS'] == 'TXN_SUCCESS':
+            messages.success(request, f'Your Transaction with Transaction ID {response["TXNID"]} is successfull')
+            payment = PaymentDetails.objects.get(id=request.POST['ORDERID'])
+            payment.status = 'done'
+            payment.order.status = True
+            payment.order.save()
+            payment.save()
+            response = {
+                'Order ID': response['ORDERID'],
+                'Transaction ID': response['TXNID'],
+                'Transaction Amount': response['TXNAMOUNT'],
+                'Transaction Date': response['TXNDATE'],
+                'Transaction Status': 'Successful',
+                'Bank Transaction ID': response['BANKTXNID'],
+            }
+        elif response['STATUS'] == 'TXN_FAILURE':
+            messages.error(request, f'Your Transaction failed because "{response["RESPMSG"]}"')
+            response = {
+                'Order ID': response['ORDERID'],
+                'Transaction ID': response['TXNID'],
+                'Transaction Amount': response['TXNAMOUNT'],
+                'Transaction Date': response['TXNDATE'],
+                'Transaction Status': 'Failed',
+            }
+        context['response'] = response
+        return render(request, 'shop/payment-handle.html', context)
+

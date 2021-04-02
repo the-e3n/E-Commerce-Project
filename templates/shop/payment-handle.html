@@ -1,17 +1,10 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}
-    Edit Account
-{% endblock %}
-
-{% block css %}
-
-{% endblock %}
+{% block title %}Buy{% endblock %}
 
 {% block body %}
-
-<div class="container-fluid flex-wrap">
-{% if messages %}
+    {% if messages %}
     <div>
         {% for message in messages %}
         {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
@@ -28,37 +21,34 @@
         {% endif %}
         {% endfor %}
     </div>
-</div>
 {% endif %}
-<div class="container-fluid text-center">
 
-    <h3 class="text-dark mb-2">Order For {{ order.product.name }}</h3>
+    <div class="container-fluid text-center">
+
+    <h3 class="text-dark mb-2">Transaction Details</h3>
     <div class="row justify-content-center mb-2">
         <div class="col-lg-8">
             <div class="row">
                 <div class="col text-left text-dark">
-                    <div class="card shadow mb-3">
+
+                    <div class="card shadow" style="margin-top: 20px;">
                         <div class="card-header py-3">
-                            <p class="text-primary m-0 font-weight-bold text-left"><button class="btn btn-primary my-2 mr-5" onclick="window.history.back()">Back</button>Order Details</p>
+                            <p class="text-primary m-0 font-weight-bold">Transaction Information</p>
                         </div>
                         <div class="card-body">
                             <div class="form-group">
-                                    <strong>Order Id:  #{{ order.id }}</strong><hr>
-                                    <strong>Order For: {{ order.product.name }}</strong><hr>
-                                    <strong>Order On:  {{ order.date }}</strong><hr>
-                                    <strong>Order Amount: Rs. {{ order.product.price }}</strong><hr>
-                                    <strong>Order Status:  {{ order.status|yesno }}</strong><hr>
-
+                                    {% for key,value in response.items %}
+                                         <strong>{{ key }}:{{ value }}</strong><hr>
+                                    {% endfor %}
+                                <a href="{% url 'home' %}" class="btn btn-primary" style="margin-top: 20px;">Return Home
+                                    </a>
                             </div>
-
+                        </div>
+                    </div>
+                            </div>
                         </div>
                     </div>
 
+                    </div>
                 </div>
-            </div>
-        </div>
-        </div>
-        </div>
-        </div>
-    {% endblock %}
-
+{% endblock body %}

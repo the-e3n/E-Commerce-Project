@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Buy{% endblock %}
+
+{% block body %}
+    {% if messages %}
+    <div>
+        {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+        <div class="alert alert-success" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                    aria-hidden="true">×</span></button>
+            <span><strong>Message: {{ message }}</strong><br></span></div>
+        {% endif %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+            <div class="alert alert-danger" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <span><strong>Important: {{ message }}</strong><br></span></div>
+        {% endif %}
+        {% endfor %}
+    </div>
+{% endif %}
+
+    <div class="container-fluid text-center">
+
+    <h3 class="text-dark mb-2">Order Details</h3>
+    <div class="row justify-content-center mb-2">
+        <div class="col-lg-8">
+            <div class="row">
+                <div class="col text-left text-dark">
+                            <button class="btn btn-primary my-2 mx-2" onclick="window.history.back()">Back</button>
+                    <div class="card shadow" style="margin-top: 20px;">
+                        <div class="card-header py-3">
+                            <p class="text-primary m-0 font-weight-bold">Check Your Details</p>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <strong>Product:{{ payment.product }}</strong><hr>
+                                <strong>Amount:{{ payment.amount }}</strong><hr>
+                                <strong>Date:{{ payment.date }}</strong><hr>
+                                <strong>Status:{{ payment.status.capitalize }}</strong><hr>
+                                <form action="https://securegw-stage.paytm.in/order/process" method="post">
+                                    {% for key,value in params.items %}
+                                        <input type="hidden" name={{key}} value={{value}}>
+                                    {% endfor %}
+                                <button class="btn btn-primary" type="submit" style="margin-top: 20px;">Make Payment
+                                    </button>
+                                </form>
+                                <strong></strong><hr>
+                            </div>
+                        </div>
+                    </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    </div>
+                </div>
+{% endblock body %}
