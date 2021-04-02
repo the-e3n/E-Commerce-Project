@@ -16,7 +16,7 @@ key = "qpzGkE8gjzSyRT1v"
 website = "WEBSTAGING"
 client_id = "ONLINE_BIT"
 try:
-    callback_url = os.environ['CALLBACK_URL']
+    callback_url = os.environ.get('CALLBACK_URL')
 except KeyError:
     callback_url = 'http://localhost:8000/shop/checkout/payment-status/'
 
