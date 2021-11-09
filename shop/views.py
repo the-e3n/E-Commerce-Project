@@ -5,7 +5,9 @@ from django.views import View
 from django.core.paginator import Paginator, EmptyPage
 from django.contrib import messages
 from .paytm import checksum
+
 import os
+import random
 
 from django.contrib import sessions
 # Create your views here.
@@ -74,6 +76,7 @@ class OrderDetail(View):
             order = Order.objects.create(customer=request.user, product=product)
             order.save()
             payment = PaymentDetails(
+                id=random.randint(0,9999),
                 customer=request.user,
                 amount=product.price,
                 product=product,
@@ -81,7 +84,7 @@ class OrderDetail(View):
                 order=order
             )
             payment.save()
-            request.session['payment_id'] = payment.id
+            request.session['payment_id'] = payment.id 
         except Product.DoesNotExist:
             messages.error(request, 'Invalid Product ID')
             return redirect('home')
